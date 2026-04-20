@@ -356,9 +356,12 @@ final class iCloudSynchronizer {
 	Enqueue the synchronization task into `backgroundQueue` with the current timestamp.
 	*/
 	private func enqueue(_ task: @escaping TaskQueue.AsyncTask) {
-		backgroundQueue.async {
-			await Self.$timestamp.withValue(Date()) {
-				await task()
+		// Don't do this on iOS 16/17, iCloud won't work but doing this will cause crashes.
+		if #unavailable(iOS 18.0, macOS 15.0, watchOS 11.0) {
+			backgroundQueue.async {
+				await Self.$timestamp.withValue(Date()) {
+					await task()
+				}
 			}
 		}
 	}
