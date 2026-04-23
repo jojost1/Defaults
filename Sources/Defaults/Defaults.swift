@@ -119,8 +119,10 @@ extension Defaults {
 			iCloud: Bool = false
 		) {
 			defer {
-				if iCloud {
-					Defaults.iCloud.add(self)
+				if #available(iOS 18.0, macOS 15.0, watchOS 11.0, *) {
+					if iCloud {
+						Defaults.iCloud.add(self)
+					}
 				}
 			}
 
@@ -169,8 +171,10 @@ extension Defaults {
 
 			super.init(name: name, suite: suite)
 
-			if iCloud {
-				Defaults.iCloud.add(self)
+			if #available(iOS 18.0, macOS 15.0, watchOS 11.0, *) {
+				if iCloud {
+					Defaults.iCloud.add(self)
+				}
 			}
 		}
 	}

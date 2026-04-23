@@ -10,6 +10,7 @@ import Foundation
 import WatchKit
 #endif
 
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 extension Defaults {
 	/**
 	Synchronize values across devices using iCloud.
@@ -175,6 +176,7 @@ extension Defaults {
 	}
 }
 
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 extension Defaults.iCloud {
 	/**
 	Represent different data sources available for synchronization.
@@ -204,6 +206,7 @@ Manages `Defaults.Keys` between the locale and remote storage.
 
 Depending on the storage, `Defaults.Keys` will be represented in different forms due to storage limitations of the remote storage. The remote storage imposes a limitation of 1024 keys. Therefore, we combine the recorded timestamp and data into a single key. Unlike remote storage, local storage does not have this limitation. Therefore, we can create a separate key (with `defaultsSyncKey` suffix) for the timestamp record.
 */
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 final class iCloudSynchronizer {
 	init(remoteStorage: some DefaultsKeyValueStore) {
 		self.remoteStorage = remoteStorage
@@ -356,12 +359,9 @@ final class iCloudSynchronizer {
 	Enqueue the synchronization task into `backgroundQueue` with the current timestamp.
 	*/
 	private func enqueue(_ task: @escaping TaskQueue.AsyncTask) {
-		// Don't do this on iOS 16/17, iCloud won't work but doing this will cause crashes.
-		if #unavailable(iOS 18.0, macOS 15.0, watchOS 11.0) {
-			backgroundQueue.async {
-				await Self.$timestamp.withValue(Date()) {
-					await task()
-				}
+		backgroundQueue.async {
+			await Self.$timestamp.withValue(Date()) {
+				await task()
 			}
 		}
 	}
@@ -513,6 +513,7 @@ final class iCloudSynchronizer {
 }
 
 // Notification related functions.
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 extension iCloudSynchronizer {
 	private func registerNotifications() {
 		// TODO: Replace it with async stream when Swift supports custom executors.
@@ -586,6 +587,7 @@ extension iCloudSynchronizer {
 }
 
 // Logging related functions.
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 extension iCloudSynchronizer {
 	private static let logger = Logger(OSLog.default)
 
